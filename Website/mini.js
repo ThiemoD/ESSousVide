@@ -1,16 +1,13 @@
 document.addEventListener("DOMContentLoaded", function(e) {   
     document.body.innerHTML = "<main>    <div class=\"main_container\">        <header>            <h1>Sous Vide Cooker</h1>        </header>        <div class=\"therm container\" id=\"thermometer\">            <div class=\"top\"></div>            <div class=\"thermometer\">                <input type=\"range\" min=\"50\" max=\"80\" value=\"65\" step=\"0.1\" id=\"aim\" onchange=\"onChangeAim(this.value)\" oninput=\"updateAimSlider(this.value)\">                <div id=\"aim_text\">65°</div>                <div id=\"temp_text\"> 0°</div>            </div>            <div class=\"bottom\"></div>            <div class=\"bulb\"></div>        </div>        <div class=\"time container\">            <div><span>Start</span>                <input type=\"time\" id=\"start_time\" onchange=\"onChangeStart(this.value)\">            </div>            <div><span>Total Duration <span style=\"font-weight:200\"> (min)</span></span>                <input type=\"number\" id=\"duration\" onchange=\"onChangeDur(this.value)\">            </div>            <div><span>Remaining Duration <span style=\"font-weight:200\"> (min)</span></span>                <input type=\"number\" id=\"rem_duration\" readonly>            </div>            <div><span>End</span>                <input type=\"time\" id=\"end_time\" onchange=\"onChangeEnd(this.value)\">            </div>            <input type=\"button\" id=\"startStop\" value=\"Start!\" onclick=\"startStop()\">        </div>    </div></main>";
-    document.head.innerHTML = "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"stylesheet\" href=\"sousvide.css\">    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap\" rel=\"stylesheet\"><title>Sous Vide Cooker</title>";
+    document.head.innerHTML = "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/ThiemoD/ESSousVide/Website/sousvide.css\">    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap\" rel=\"stylesheet\"><title>Sous Vide Cooker</title>";
     let jq = document.createElement('script');
-    /*jq.onload = function (){
-
-    }*/
-    jq.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js";
     jq.onload = function(){
         let script = document.createElement('script');
-        script.src = "sousvide.js";
+        script.src = "https://cdn.jsdelivr.net/gh/ThiemoD/ESSousVide/Website/sousvide.js";
         document.head.appendChild(script);
     }
+    jq.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js";
     document.head.appendChild(jq);
     
 });
