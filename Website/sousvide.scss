@@ -1,0 +1,161 @@
+*, ::before, ::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box; 
+  }
+body {
+    font-family: "Oswald", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+$therm_width: 40px;
+$therm_bulb_diam: 3*$therm_width;
+$gray: #e0e0e0;
+$red: rgb(218, 63, 63);
+$black:rgb(26, 26, 26);
+
+.main_container{
+    //position:fixed;
+    height: 50vh;
+    width: 50vw;
+    margin:auto;
+    padding: 20px;
+    display:grid;
+    grid-template-columns: $therm_bulb_diam auto;
+    grid-template-rows: 10vh auto;
+    grid-column-gap: 10px;
+}
+header{
+    grid-column: 2;
+    text-align: center;
+    font-size: 2em;
+}
+.therm.container{
+    grid-row: 1 / span 2;
+    display:grid;
+    grid-template-columns: auto;
+    grid-template-rows: $therm_width auto $therm_width/2 $therm_bulb_diam; 
+    --aim: 65;
+    --temp: 0;
+    opacity:0.8;
+
+    &:hover{
+        opacity: 1.0;
+    }
+
+    >*{
+        place-self: center;
+    }
+    >.top{
+        width:$therm_width;
+        height:100%;
+        border-radius: $therm_width/2 $therm_width/2 0 0;
+        background-color: $gray;
+    }
+    >.thermometer{
+        width: $therm_width;
+        height:100%;
+        background-color: $gray;
+        position:relative;
+        display: grid;
+        grid-template-rows: auto;
+        grid-template-columns: auto;
+        &::before{
+            content:"";
+            height: calc(var(--temp) * (100% - 5px) / 100 + 5px);
+            position:absolute;
+            width:100%;
+            bottom:0;
+            background-color: $red;
+            z-index:1;
+        }
+        >input{
+            writing-mode: vertical-lr;
+            direction:rtl;
+            -webkit-appearance: none;  /* Override default CSS styles */
+            appearance: none;
+            background-color: rgba(0,0,0,0);
+            width: 300%; /* Full-width */
+            height: 100%;
+            position:relative;
+            left:-100%;
+            z-index:2;
+            cursor: pointer;
+            &::-webkit-slider-thumb {
+                appearance: none;
+                border-radius: 0;
+                width: $therm_width;
+                height: 5px;
+                background: rgb(26, 26, 26);
+                border: none;
+            }
+            &::-moz-range-thumb {
+                appearance: none;
+                border-radius: 0;
+                width: $therm_width;
+                transform: translate(25%,0);
+                height: 5px;
+                background: $black;
+                border: none;
+            }
+        }
+        >div{
+            position: absolute;
+            width:100%;
+            padding: 0 2px;
+            &#aim_text{
+                bottom:calc(var(--aim) * (100% - 5px) / 100 + 5px); 
+                left:100%;
+                box-shadow: 0 5px 0 $black;
+            }
+            &#temp_text{
+                bottom:calc(var(--temp) * (100% - 5px) / 100 + 5px);
+                left:-100%;
+                box-shadow: 0 5px 0 $red;
+            }
+        }
+        
+    }
+    >.bottom{
+        width: $therm_width;
+        height:100%;
+        background-color: $red;
+    }
+    >.bulb{
+        background-color: $red;
+        border-radius: 50%;
+        width:$therm_bulb_diam;
+        height:$therm_bulb_diam;
+        position:relative;
+        &::before{
+            background-color: inherit;
+            content:"";
+            position:absolute;
+            height:50%;
+            width:40px;
+            top:0;
+            left:50%;
+            transform:translate(-50%,0);
+        }
+    }
+}
+.time.container{
+    grid-column: 2;
+    >div>input{
+        height:24px;
+        width:50%;
+        float:right;
+    }
+    >div,>input{
+        margin: 9px 0;
+    }
+    >input{
+
+        height:48px;
+        width:100%;
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-style: normal;
+    }
+}
