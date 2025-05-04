@@ -80,7 +80,7 @@ function onStop()
     $("#start_time, #end_time").prop('disabled', false);
 }
 
-function getInfo(){
+function update(){
     request("getInfo",undefined,function(data){
         settings.temp = data.temp;
         if (settings.running && !data.running)
@@ -184,12 +184,12 @@ function onChangeDur(val){
     }
 }
 
-function update(){
-    getInfo()
-    setTimeout(update, 500);
+function updateSched(){
+    update()
+    setTimeout(updateSched, 500);
 }
 
 $(document).ready(function(){
     updateAimSlider(settings.aim)
-    update();
+    updateSched();
 });
