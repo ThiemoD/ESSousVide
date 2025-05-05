@@ -22,7 +22,5 @@
     "particle.targetDevice": "photon",
     "particle.targetPlatform": "photon",
     "particle.firmwareVersion": "3.3.1",
-    "r.lsp.promptToInstall": false,
-    "C_Cpp.errorSquiggles": "disabled",
-    "particle.debugWarningShown": true
+    "r.lsp.promptToInstall": false
 }
