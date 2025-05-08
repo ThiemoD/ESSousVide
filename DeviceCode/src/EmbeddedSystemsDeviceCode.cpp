@@ -137,7 +137,7 @@ SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
 // setup() runs once, when the device is first turned on
 void setup() {
-    WiFi.setCredentials("Dsubanko", "majuxaxa0014", WPA2);
+    WiFi.setCredentials("", "", WPA2);
  
   	bool mdns_success = mDNS.setHostname(hostname);
 
