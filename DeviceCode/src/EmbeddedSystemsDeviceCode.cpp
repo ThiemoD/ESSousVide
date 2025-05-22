@@ -84,7 +84,9 @@ void start(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   settings.aim = aim;
   settings.dur = dur;
   settings.start = millis()+start_diff;
-  Log.info("Process started with Aim: %.1f °C, Duration: %lu min, Start offset: %lu min", settings.aim, settings.dur, start_diff);
+  int dur_min = settings.dur / 60000;
+  int start_min = start_diff / 60000;
+  Log.info("Process started with Aim: %.1f °C, Duration: %d min, Start offset: %d min", settings.aim, dur_min, start_min);
   // The main loop() will handle LED and relay based on these settings.
 
 }
@@ -121,7 +123,8 @@ void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.dur = dur;
-  Log.info("Duration updated to: %lu min", settings.dur);
+  int dur_min = settings.dur / 60000;
+  Log.info("Duration updated to: %d min", dur_min);
   // The main loop() will use the new duration.
 }
 
@@ -136,9 +139,6 @@ void stop(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
   settings.running = false;
 
-  //not needed since the main loop will handle it
-  //digitalWrite(relay, LOW);   // Turn off relay
-  //digitalWrite(led, LOW);     // Turn off LED
   Log.info("Process stopped via web request.");
 }
 
@@ -152,9 +152,9 @@ SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
 // setup() runs once, when the device is first turned on
 void setup() {
-    WiFi.setCredentials("WLAN10530356_2G", "zx7TdpytTtqt", WPA2);
-    WiFi.connect();
-    waitUntil(WiFi.ready);
+    // WiFi.setCredentials("", "", WPA2);
+    // WiFi.connect();
+    // waitUntil(WiFi.ready);
  
   	bool mdns_success = mDNS.setHostname(hostname);
 
@@ -207,11 +207,11 @@ void loop() {
   
   if (!tempIsValid) 
   {
-      Log.warn("Failed to read temperature after %d retries. Heater control will be disabled until valid read.", i);
+      Log.info("Failed to read temperature after %d retries. Heater control will be disabled until valid read.", i);
   }
 
   // Check if the cooking duration has expired
-  if (settings.running && settings.dur > 0 && (millis() - settings.start >= settings.dur)) 
+  if (settings.running && settings.dur > 0 && millis() >= settings.start && (millis() - settings.start >= settings.dur)) 
   {
       Log.info("Timer expired. Stopping process.");
       settings.running = false;
@@ -221,7 +221,7 @@ void loop() {
   bool isProcessActive = settings.running && (millis() >= settings.start);
 
   if (isProcessActive) 
-  {
+  { 
       digitalWrite(led, HIGH); // Indicate active state
 
       if (tempIsValid) 
@@ -240,7 +240,7 @@ void loop() {
       else 
       {
           // Safety: If temperature reading is invalid, turn off the heater.
-          Log.warn("Invalid temperature reading; turning relay OFF for safety.");
+          Log.info("Invalid temperature reading; turning relay OFF for safety.");
           digitalWrite(relay, LOW);
       }
   } 
@@ -250,7 +250,7 @@ void loop() {
       digitalWrite(relay, LOW); // Ensure heater is OFF
       if (settings.running && millis() < settings.start) 
       {
-          Log.trace("Process scheduled, waiting for start time.");
+          Log.info("Process scheduled, waiting for start time.");
       }
   }
 }
