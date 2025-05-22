@@ -78,10 +78,15 @@ void start(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   settings.dur = dur;
   settings.start = millis()+start_diff;
   //TODO: add starting code here
+  int dur_min = settings.dur / 60000;
+  int start_min = start_diff / 60000;
+  Log.info("Process started with Aim: %.1f °C, Duration: %d min, Start offset: %d min", settings.aim, dur_min, start_min);
+  // The main loop() will handle LED and relay based on these settings.
+
 }
 
 void setAim(WebServer &server, WebServer::ConnectionType type, char *, bool) {
-  Log.info("Webserver: start request");
+  Log.info("Webserver: setAim request");
   if (!settings.running || type != WebServer::POST) { server.httpFail(); return;}
 
   char name[16], value[32];
@@ -112,6 +117,9 @@ void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
 
   settings.dur = dur;
   //TODO: add code updating duration
+  int dur_min = settings.dur / 60000;
+  Log.info("Duration updated to: %d min", dur_min);
+  // The main loop() will use the new duration.
 }
 
 void stop(WebServer &server, WebServer::ConnectionType type, char *, bool) {
@@ -125,6 +133,8 @@ void stop(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
   settings.running = false;
   //TODO: add stopping code here
+
+  Log.info("Process stopped via web request.");
 }
 
 
@@ -137,7 +147,9 @@ SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
 // setup() runs once, when the device is first turned on
 void setup() {
-    WiFi.setCredentials("", "", WPA2);
+    // WiFi.setCredentials("", "", WPA2);
+    // WiFi.connect();
+    // waitUntil(WiFi.ready);
  
   	bool mdns_success = mDNS.setHostname(hostname);
 
