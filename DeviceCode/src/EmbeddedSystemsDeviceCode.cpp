@@ -15,6 +15,7 @@
 // Let Device OS manage the connection to the Particle Cloud
 SYSTEM_MODE(AUTOMATIC);  ///TODO: Set System_mode to Manual
 
+//Init of Pins
 DS18B20  ds18b20(D2, true); //Sets Pin D2 for Water Temp Sensor
 int led = D3; //LED Pin
 int relay = D4; //Relay Control
@@ -83,7 +84,7 @@ void start(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   settings.aim = aim;
   settings.dur = dur;
   settings.start = millis()+start_diff;
-  Log.info("Process started with Aim: %.1f °C, Duration: %lu ms, Start offset: %lu ms", settings.aim, settings.aim, start_diff);
+  Log.info("Process started with Aim: %.1f °C, Duration: %lu min, Start offset: %lu min", settings.aim, settings.dur, start_diff);
   // The main loop() will handle LED and relay based on these settings.
 
 }
@@ -120,7 +121,7 @@ void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.dur = dur;
-  Log.info("Duration updated to: %lu ms", settings.dur);
+  Log.info("Duration updated to: %lu min", settings.dur);
   // The main loop() will use the new duration.
 }
 
@@ -135,8 +136,9 @@ void stop(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
   settings.running = false;
 
-  digitalWrite(relay, LOW);   // Turn off relay
-  digitalWrite(led, LOW);     // Turn off LED
+  //not needed since the main loop will handle it
+  //digitalWrite(relay, LOW);   // Turn off relay
+  //digitalWrite(led, LOW);     // Turn off LED
   Log.info("Process stopped via web request.");
 }
 
