@@ -84,7 +84,9 @@ void start(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   settings.aim = aim;
   settings.dur = dur;
   settings.start = millis()+start_diff;
-  int dur_min = settings.dur / 60000;
+
+  //Debug output 
+  int dur_min = dur / 60000;
   int start_min = start_diff / 60000;
   Log.info("Process started with Aim: %.1f °C, Duration: %d min, Start offset: %d min", settings.aim, dur_min, start_min);
   // The main loop() will handle LED and relay based on these settings.
@@ -105,7 +107,7 @@ void setAim(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.aim = aim;
-  //TODO: add code updating aim temperature
+  //Debug output
   Log.info("Aim temperature updated to: %.1f °C", settings.aim);
 }
 
@@ -123,8 +125,9 @@ void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.dur = dur;
-  //TODO: add code updating duration
-  int dur_min = settings.dur / 60000;
+
+  //Debug output
+  int dur_min = dur / 60000;
   Log.info("Duration updated to: %d min", dur_min);
   // The main loop() will use the new duration.
 }
@@ -140,7 +143,8 @@ void stop(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
   settings.running = false;
   //TODO: add stopping code here
-
+  digitalWrite(relay, LOW);   // Explicitly turn off relay
+  digitalWrite(led, LOW);     // Explicitly turn off LED
   Log.info("Process stopped via web request.");
 }
 
