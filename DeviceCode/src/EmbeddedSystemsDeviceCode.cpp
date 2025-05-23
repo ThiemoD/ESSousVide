@@ -4,7 +4,7 @@
 #define WEBDUINO_OUTPUT_BUFFER_SIZE 40
 #define WEBDUINO_FAVICON_DATA ""    // no favicon
 
-#define MAXRETRY 5
+#define MAXRETRY 3
 
 #include <MDNS.h>
 #include <WebDuino.h>
@@ -184,6 +184,9 @@ void setup() {
     pinMode(led, OUTPUT);
     digitalWrite(led, LOW);
 
+    //this might improve lag of webserver
+    ds18b20.setResolution(9); // Set resolution to 9 bits, before at 12Bit to long of a wait time resulting in lag
+
 }
 
 // loop() runs over and over again, as quickly as it can execute.
@@ -194,7 +197,8 @@ void loop() {
 
   webserver.processConnection(buff, &len);
 
-  //Get temperature from DS18B20
+  //Get temperature from DS18B20 
+  //takes in total 103ms to run 
   int i = 0;
   bool tempIsValid = false;
   do {
@@ -255,4 +259,5 @@ void loop() {
           Log.info("Process scheduled, waiting for start time.");
       }
   }
+
 }
