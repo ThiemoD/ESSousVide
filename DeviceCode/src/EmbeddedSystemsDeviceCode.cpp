@@ -105,8 +105,8 @@ void setAim(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.aim = aim;
+  //TODO: add code updating aim temperature
   Log.info("Aim temperature updated to: %.1f °C", settings.aim);
-  // The main loop() will adjust heating based on the new aim temperature.
 }
 
 void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
@@ -123,6 +123,7 @@ void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.dur = dur;
+  //TODO: add code updating duration
   int dur_min = settings.dur / 60000;
   Log.info("Duration updated to: %d min", dur_min);
   // The main loop() will use the new duration.
@@ -138,6 +139,7 @@ void stop(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.httpSuccess("application/json");
   server.print("{}");
   settings.running = false;
+  //TODO: add stopping code here
 
   Log.info("Process stopped via web request.");
 }
