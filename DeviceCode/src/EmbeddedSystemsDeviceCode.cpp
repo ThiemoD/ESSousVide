@@ -101,7 +101,7 @@ void setAim(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   settings.aim = aim;
   //TODO: add code updating aim temperature
   Log.info("Aim temperature updated to: %.1f °C", settings.aim);
-
+}
 
 void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   Log.info("Webserver: setDur request");
