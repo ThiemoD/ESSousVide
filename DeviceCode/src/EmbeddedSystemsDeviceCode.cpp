@@ -100,10 +100,11 @@ void setAim(WebServer &server, WebServer::ConnectionType type, char *, bool) {
 
   settings.aim = aim;
   //TODO: add code updating aim temperature
-}
+  Log.info("Aim temperature updated to: %.1f °C", settings.aim);
+
 
 void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
-  Log.info("Webserver: start request");
+  Log.info("Webserver: setDur request");
   if (!settings.running || type != WebServer::POST) { server.httpFail(); return;}
 
   char name[16], value[32];
