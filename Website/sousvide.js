@@ -225,6 +225,5 @@ function sendNotification() {
 $(document).ready(function(){
     updateAimSlider(settings.aim)
     updateSched();
-    sendNotification();
 });
 
