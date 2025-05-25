@@ -10,6 +10,7 @@
 
     <title>Sous Vide Cooker</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script> const alarmsound = "notification.mp3";</script>
     <script type='text/javascript' src="sousvide.js"></script>
 </head>
 <body>
@@ -36,10 +37,13 @@
                 <input type="number" id="duration" onchange="onChangeDur(this.value)">
             </div>
             <div><span>Remaining Duration <span style="font-weight:200"> (min)</span></span>
-                <input type="number" id="rem_duration" readonly>
+                <input type="number" id="rem_duration" value="34" readonly disabled>
             </div>
             <div><span>End</span>
                 <input type="time" id="end_time" onchange="onChangeEnd(this.value)">
+            </div>
+            <div><span>Notify Me</span>
+                <input type="checkbox" id="notifyMe" onchange="onChangeNotify(this.checked)">
             </div>
             <input type="button" id="startStop" value="Start!" onclick="startStop()">
         </div>
