@@ -34,7 +34,9 @@ let settings = {
     dur: 0,
     rem_dur: 0,
     start: null,
-    end: null
+    end: null,
+    notifyMe: false,
+    notifyFlag: false
 }
 
 function updateInput(obj, str, callback = () => void 0)
@@ -70,6 +72,7 @@ function updateFields(){
 
 function onStart()
 {
+    settings.notifyFlag = false;
     $("#startStop").val("Stop!");
     $("#start_time, #end_time").prop('disabled', true);
 }
@@ -78,6 +81,10 @@ function onStop()
 {
     $("#startStop").val("Start!");
     $("#start_time, #end_time").prop('disabled', false);
+    if(settings.notifyFlag && settings.notifyMe)
+    {
+        sendNotification();
+    }
 }
 
 function update(){
@@ -115,10 +122,10 @@ function startStop(){
             diff = settings.start.getTime()-datenow.getTime();
         }
         request("start",{start: diff, dur: settings.dur, aim: settings.aim});
-
     }
     else 
     {    
+        settings.notifyFlag = true;
         request("stop");
     }
 
@@ -189,7 +196,35 @@ function updateSched(){
     setTimeout(updateSched, 500);
 }
 
+
+function onChangeNotify(val){
+    settings.notifyMe=val;
+    if(val)
+    {
+        prepareNotification();
+    }
+}
+function prepareNotification() {
+    if (!("Notification" in window)) {
+      alert("This browser does not support Desktop notifications, no message will be sent");
+    }
+    if (Notification.permission !== "denied" && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+}
+function sendNotification() {
+    if (Notification.permission === "granted") {
+        new Notification("Time's up!", { body: "Your eggs are done!"});
+    }
+    let audio = new Audio(alarmsound);
+    audio.addEventListener("canplaythrough", (event) => {
+        audio.play();
+    });
+}
+
 $(document).ready(function(){
     updateAimSlider(settings.aim)
     updateSched();
+    sendNotification();
 });
+
