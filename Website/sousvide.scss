@@ -30,14 +30,14 @@ $black:rgb(26, 26, 26);
 header{
     grid-column: 2;
     text-align: center;
-    font-size: 2em;
+    font-size: calc(min((100vw - 120px) / 18, 2em));
 }
 .therm.container{
     grid-row: 1 / span 2;
     display:grid;
     grid-template-columns: auto;
     grid-template-rows: $therm_width auto $therm_width/2 $therm_bulb_diam; 
-    --aim: 65;
+    --aim: 50;
     --temp: 0;
     opacity:0.8;
 
@@ -95,7 +95,6 @@ header{
                 appearance: none;
                 border-radius: 0;
                 width: $therm_width;
-                transform: translate(25%,0);
                 height: 5px;
                 background: $black;
                 border: none;
@@ -147,11 +146,11 @@ header{
         display:grid;
         >input{
             height:24px;
-            padding:2px 0 2px 4px;
             
             font-family: "Oswald", sans-serif;
             font-weight: 400;
             font-style: normal;
+            text-align: right;
             &:disabled{
                 background-color: transparent;
                 color: black;
@@ -159,6 +158,9 @@ header{
                 border-width: 1px;
                 border-radius: 2px;
             }
+        }
+        >input[type=number]{
+           //padding-right: 20px;
         }
         >input[type=checkbox]{
             grid-column: 2;

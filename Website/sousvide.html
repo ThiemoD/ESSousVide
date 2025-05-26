@@ -34,10 +34,10 @@
                 <input type="time" id="start_time" onchange="onChangeStart(this.value)">
             </div>
             <div><span>Total Duration <span style="font-weight:200"> (min)</span></span>
-                <input type="number" id="duration" onchange="onChangeDur(this.value)">
+                <input type="number" id="duration" onchange="onChangeDur(this.value)" min="1" max="1440" value="40">
             </div>
             <div><span>Remaining Duration <span style="font-weight:200"> (min)</span></span>
-                <input type="number" id="rem_duration" value="34" readonly disabled>
+                <input type="number" id="rem_duration" readonly disabled>
             </div>
             <div><span>End</span>
                 <input type="time" id="end_time" onchange="onChangeEnd(this.value)">

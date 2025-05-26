@@ -24,7 +24,7 @@ body {
 header {
   grid-column: 2;
   text-align: center;
-  font-size: 2em;
+  font-size: calc(min((100vw - 120px) / 18, 2em));
 }
 
 .therm.container {
@@ -32,7 +32,7 @@ header {
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: 40px auto 20px 120px;
-  --aim: 65;
+  --aim: 50;
   --temp: 0;
   opacity: 0.8;
 }
@@ -101,7 +101,6 @@ header {
   appearance: none;
   border-radius: 0;
   width: 40px;
-  transform: translate(25%, 0);
   height: 5px;
   background: #1a1a1a;
   border: none;
@@ -160,10 +159,10 @@ header {
 
 .time.container > div > input {
   height: 24px;
-  padding: 2px 0 2px 4px;
   font-family: "Oswald", sans-serif;
   font-weight: 400;
   font-style: normal;
+  text-align: right;
 }
 
 .time.container > div > input:disabled {

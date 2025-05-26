@@ -223,7 +223,8 @@ function sendNotification() {
 }
 
 $(document).ready(function(){
-    updateAimSlider(settings.aim)
+    updateAimSlider(settings.aim);
     updateSched();
+    $("#aim").val(settings.aim);
 });
 
