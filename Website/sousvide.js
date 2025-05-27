@@ -81,7 +81,7 @@ function onStop()
 {
     $("#startStop").val("Start!");
     $("#start_time, #end_time").prop('disabled', false);
-    if(settings.notifyFlag && settings.notifyMe)
+    if(!settings.notifyFlag && settings.notifyMe)
     {
         sendNotification();
     }
