@@ -4,6 +4,8 @@
 #define WEBDUINO_OUTPUT_BUFFER_SIZE 40
 #define WEBDUINO_FAVICON_DATA ""    // no favicon
 
+#define MAXRETRY 3
+
 #include <MDNS.h>
 #include <WebDuino.h>
 #include <DS18B20.h>
@@ -12,6 +14,11 @@
 
 // Let Device OS manage the connection to the Particle Cloud
 SYSTEM_MODE(AUTOMATIC);  ///TODO: Set System_mode to Manual
+
+//Init of Pins
+DS18B20  ds18b20(D2, true); //Sets Pin D2 for Water Temp Sensor
+int led = D3; //LED Pin
+int relay = D4; //Relay Control
 
 const String hostname   = "sousvide";
 const String remote_url = "http://google.at";
@@ -77,8 +84,9 @@ void start(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   settings.aim = aim;
   settings.dur = dur;
   settings.start = millis()+start_diff;
-  //TODO: add starting code here
-  int dur_min = settings.dur / 60000;
+
+  //Debug output 
+  int dur_min = dur / 60000;
   int start_min = start_diff / 60000;
   Log.info("Process started with Aim: %.1f °C, Duration: %d min, Start offset: %d min", settings.aim, dur_min, start_min);
   // The main loop() will handle LED and relay based on these settings.
@@ -99,7 +107,7 @@ void setAim(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.aim = aim;
-  //TODO: add code updating aim temperature
+  //Debug output
   Log.info("Aim temperature updated to: %.1f °C", settings.aim);
 }
 
@@ -117,8 +125,9 @@ void setDur(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
 
   settings.dur = dur;
-  //TODO: add code updating duration
-  int dur_min = settings.dur / 60000;
+
+  //Debug output
+  int dur_min = dur / 60000;
   Log.info("Duration updated to: %d min", dur_min);
   // The main loop() will use the new duration.
 }
@@ -134,7 +143,8 @@ void stop(WebServer &server, WebServer::ConnectionType type, char *, bool) {
   server.print("{}");
   settings.running = false;
   //TODO: add stopping code here
-
+  digitalWrite(relay, LOW);   // Explicitly turn off relay
+  digitalWrite(led, LOW);     // Explicitly turn off LED
   Log.info("Process stopped via web request.");
 }
 
@@ -172,6 +182,15 @@ void setup() {
   	webserver.setFailureCommand(&loadPage);
   	webserver.begin();
     Log.info("Set up Webserver");
+
+    //Pin Setup
+    pinMode(relay, OUTPUT);
+    pinMode(led, OUTPUT);
+    digitalWrite(led, LOW);
+
+    //this might improve lag of webserver
+    ds18b20.setResolution(9); // Set resolution to 9 bits, before at 12Bit to long of a wait time resulting in lag
+
 }
 
 // loop() runs over and over again, as quickly as it can execute.
@@ -182,5 +201,67 @@ void loop() {
 
   webserver.processConnection(buff, &len);
 
-  if(settings.running && millis() > settings.start + settings.dur) settings.running = false;
+  //Get temperature from DS18B20 
+  //takes in total 103ms to run 
+  int i = 0;
+  bool tempIsValid = false;
+  do {
+      float tempRead = ds18b20.getTemperature(); // Returns temperature in Celsius
+      if (ds18b20.crcCheck()) 
+      {
+          settings.temp = tempRead;
+          tempIsValid = true;
+          break; 
+      }
+  } while (MAXRETRY > i++);
+  
+  if (!tempIsValid) 
+  {
+      Log.info("Failed to read temperature after %d retries. Heater control will be disabled until valid read.", i);
+  }
+
+  // Check if the cooking duration has expired
+  if (settings.running && settings.dur > 0 && millis() >= settings.start && (millis() - settings.start >= settings.dur)) 
+  {
+      Log.info("Timer expired. Stopping process.");
+      settings.running = false;
+  }
+
+  // Main control logic
+  bool isProcessActive = settings.running && (millis() >= settings.start);
+
+  if (isProcessActive) 
+  { 
+      digitalWrite(led, HIGH); // Indicate active state
+
+      if (tempIsValid) 
+      {
+          const float effectiveSetpoint = settings.aim + 0.3f; 
+
+          if (settings.temp < effectiveSetpoint) 
+          {
+              digitalWrite(relay, HIGH); // Turn heater ON
+          } 
+          else 
+          {
+              digitalWrite(relay, LOW);  // Turn heater OFF
+          }
+      }
+      else 
+      {
+          // Safety: If temperature reading is invalid, turn off the heater.
+          Log.info("Invalid temperature reading; turning relay OFF for safety.");
+          digitalWrite(relay, LOW);
+      }
+  } 
+  else 
+  { // Not running
+      digitalWrite(led, LOW);
+      digitalWrite(relay, LOW); // Ensure heater is OFF
+      if (settings.running && millis() < settings.start) 
+      {
+          Log.info("Process scheduled, waiting for start time.");
+      }
+  }
+
 }
